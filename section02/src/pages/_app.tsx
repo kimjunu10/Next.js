@@ -1,14 +1,25 @@
 import GlobalLayout from "./component/global-layout";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import SearchableLayout from "./component/searchable-layout";
+import { ReactNode } from "react";
+import { NextPage } from "next";
 
-export default function App({ Component, pageProps }: AppProps) {
+type NextPageWithLayout = NextPage & {
+  getLayout? : (page : ReactNode) => ReactNode;
+}
+export default function App({ 
+  Component, 
+  pageProps 
+}: AppProps & {
+  Component : NextPageWithLayout
+}) {
   
+  const getLayout = Component.getLayout ?? ((page : ReactNode) => page)
   return (
 
     <GlobalLayout>
-      {/* children으로 넘기기 */}
-      <Component {...pageProps}/>
+        {getLayout(<Component {...pageProps}/>)}
     </GlobalLayout>
   )
 }
